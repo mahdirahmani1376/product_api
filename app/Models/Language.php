@@ -11,7 +11,8 @@ class Language extends Model
 
     protected $guarded = [];
 
+
     public function products(){
-        return $this->belongsToMany(Product::class,);
+        return $this->hasMany(LanguageProduct::class);
     }
 }

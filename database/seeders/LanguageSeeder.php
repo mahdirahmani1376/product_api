@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Language;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,6 +15,10 @@ class LanguageSeeder extends Seeder
      */
     public function run()
     {
-        //
+        Language::create(['language_iso_code'=>'fa']);
+        Language::create(['language_iso_code'=>'en']);
+        Language::create(['language_iso_code'=>'ch']);
+        Language::create(['language_iso_code'=>'tr']);
+        Language::create(['language_iso_code'=>'ar']);
     }
 }

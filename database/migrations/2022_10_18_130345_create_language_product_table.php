@@ -16,6 +16,18 @@ return new class extends Migration
         Schema::create('language_product', function (Blueprint $table) {
             $table->foreignId('language_id')->constrained();
             $table->foreignId('product_id')->constrained();
+
+            $table->string('language_iso_code');
+            $table->string('model')->nullable();
+            $table->string('name');
+            $table->string('slug');
+            $table->string('meta_title')->nullable();
+            $table->string('meta_description')->nullable();
+            $table->string('meta_keywords')->nullable();
+            $table->string('canonical')->nullable();
+            $table->string('description');
+
+            $table->timestamps();
         });
     }
 

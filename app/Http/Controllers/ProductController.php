@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Language;
+use App\Models\LanguageProduct;
 use App\Models\product;
 use App\Http\Requests\StoreproductRequest;
 use App\Http\Requests\UpdateproductRequest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -39,33 +41,25 @@ class ProductController extends Controller
      */
     public function store(StoreproductRequest $request)
     {
-
         $product = Product::create(request()->all());
-        $language_persian = Language::create([
-        'language_iso_code'=>'fa',
-        'model'=> request('name'),
-        'name'=> request('name'),
-        'slug'=> str_replace(" ","_",request('name')),
-        'meta_title'=> request('description'),
-        'meta_description'=> request('description'),
-        'meta_keywords'=> request('description'),
-        'canonical'=> request('name'),
-        'description'=> request('description'),
-        ]);
+        $list_of_languages = Language::all()->pluck('language_iso_code');
+        foreach ($list_of_languages as $language_iso_code){
+                $language_english = LanguageProduct::create([
+                'language_id'=>Language::where('language_iso_code',$language_iso_code)->first()->id,
+                'product_id'=>$product->id,
+                'language_iso_code'=>$language_iso_code,
+                'model'=> request('name'),
+                'name'=> request('name'),
+                'slug'=> str_replace(" ","_",request('name')),
+                'meta_title'=> request('description'),
+                'meta_description'=> request('description'),
+                'meta_keywords'=> request('description'),
+                'canonical'=> request('name'),
+                'description'=> request('description'),
+            ]);
+        }
 
-        $language_english = Language::create([
-            'language_iso_code'=>'en',
-            'model'=> request('name'),
-            'name'=> request('name'),
-            'slug'=> str_replace(" ","_",request('name')),
-            'meta_title'=> request('description'),
-            'meta_description'=> request('description'),
-            'meta_keywords'=> request('description'),
-            'canonical'=> request('name'),
-            'description'=> request('description'),
-        ]);
-
-        $product->languages()->attach([$language_persian->id,$language_english->id]);
+//        $product->languages()->attach([$language_persian->id,$language_english->id]);
 
         return 'product created successfully';
     }
