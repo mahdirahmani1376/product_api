@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Language;
 use App\Models\product;
 use App\Http\Requests\StoreproductRequest;
 use App\Http\Requests\UpdateproductRequest;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -35,11 +38,36 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(StoreproductRequest $request)
-//    public function store()
     {
-//        $validated = $request->validated();
+
         $product = Product::create(request()->all());
-        return $product;
+        $language_persian = Language::create([
+        'language_iso_code'=>'fa',
+        'model'=> request('name'),
+        'name'=> request('name'),
+        'slug'=> str_replace(" ","_",request('name')),
+        'meta_title'=> request('description'),
+        'meta_description'=> request('description'),
+        'meta_keywords'=> request('description'),
+        'canonical'=> request('name'),
+        'description'=> request('description'),
+        ]);
+
+        $language_english = Language::create([
+            'language_iso_code'=>'en',
+            'model'=> request('name'),
+            'name'=> request('name'),
+            'slug'=> str_replace(" ","_",request('name')),
+            'meta_title'=> request('description'),
+            'meta_description'=> request('description'),
+            'meta_keywords'=> request('description'),
+            'canonical'=> request('name'),
+            'description'=> request('description'),
+        ]);
+
+        $product->languages()->attach([$language_persian->id,$language_english->id]);
+
+        return 'product created successfully';
     }
 
     /**

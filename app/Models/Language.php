@@ -9,7 +9,9 @@ class Language extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function products(){
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Product::class,);
     }
 }

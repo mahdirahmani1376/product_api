@@ -14,10 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('language_product', function (Blueprint $table) {
-            $table->unsignedBigInteger('language_id');
-            $table->foreign('language_id')->references('id')->on('products');
-            $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id')->references('id')->on('languages');
+            $table->foreignId('language_id')->constrained();
+            $table->foreignId('product_id')->constrained();
         });
     }
 
