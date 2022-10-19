@@ -41,27 +41,26 @@ class ProductController extends Controller
      */
     public function store(StoreproductRequest $request)
     {
-        $product = Product::create(request()->all());
-        $list_of_languages = Language::all()->pluck('language_iso_code');
-        foreach ($list_of_languages as $language_iso_code){
-                $language_english = LanguageProduct::create([
-                'language_id'=>Language::where('language_iso_code',$language_iso_code)->first()->id,
-                'product_id'=>$product->id,
-                'language_iso_code'=>$language_iso_code,
-                'model'=> request('name'),
-                'name'=> request('name'),
-                'slug'=> str_replace(" ","_",request('name')),
-                'meta_title'=> request('description'),
-                'meta_description'=> request('description'),
-                'meta_keywords'=> request('description'),
-                'canonical'=> request('name'),
-                'description'=> request('description'),
-            ]);
+        $product = Product::create($request->validated());
+        $listOfLanguages = Language::get();
+        foreach ($listOfLanguages as $language){
+                $language= LanguageProduct::create([
+                    'language_id'          =>$language->id,
+                    'product_id'           =>$product->id,
+                    'language_iso_code'    =>$language->language_iso_code,
+                    'model'                => request('name'),
+                    'name'                 => request('name'),
+                    'slug'                 => str_replace(" ","_",request('name')),
+                    'meta_title'           => request('description'),
+                    'meta_description'     => request('description'),
+                    'meta_keywords'        => request('description'),
+                    'canonical'            => request('name'),
+                    'description'          => request('description'),
+                ]);
         }
 
-//        $product->languages()->attach([$language_persian->id,$language_english->id]);
-
         return 'product created successfully';
+
     }
 
     /**

@@ -13,7 +13,7 @@ class StoreproductRequest extends FormRequest
      */
     public function authorize()
     {
-        return True;
+        return true;
     }
 
     /**
@@ -24,7 +24,9 @@ class StoreproductRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'data'                  => ['required', 'array'],
+            'data.*.language_id'    => ['required', 'numeric'],
+            'data.*.name'           => ['required', 'string'],
         ];
     }
 }

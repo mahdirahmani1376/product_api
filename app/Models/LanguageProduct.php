@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class LanguageProduct extends Pivot
 {
+
     use HasFactory;
 
 }
