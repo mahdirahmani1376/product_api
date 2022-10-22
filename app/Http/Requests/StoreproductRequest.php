@@ -25,9 +25,10 @@ class StoreproductRequest extends FormRequest
     public function rules()
     {
         $count_of_products = Language::count();
-        
+
         return [
-            'data'                   =>  ['required', 'array','min:$count_of_products','max:$count_of_products'],
+//            'data'                   =>  ['required', 'array','min:$count_of_products','max:$count_of_products'],
+            'data'                   =>  ['required'],
             'data.*.language_id'     =>  ['required', 'numeric'],
             'data.*.name'            =>  ['required', 'string'],
             'data.*.model'            =>  ['required','string'],
@@ -40,3 +41,4 @@ class StoreproductRequest extends FormRequest
         ];
     }
 }
+
