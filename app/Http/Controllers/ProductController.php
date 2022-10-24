@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateproductRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -41,21 +42,22 @@ class ProductController extends Controller
      */
     public function store(StoreproductRequest $request)
     {
-        $product = Product::create($request->validated());
-        $listOfLanguages = Language::get();
-        foreach ($listOfLanguages as $language){
-                $language= LanguageProduct::create([
-                    'language_id'          =>$language->id,
-                    'product_id'           =>$product->id,
-                    'language_iso_code'    =>$language->language_iso_code,
-                    'model'                => request('name'),
-                    'name'                 => request('name'),
-                    'slug'                 => str_replace(" ","_",request('name')),
-                    'meta_title'           => request('description'),
-                    'meta_description'     => request('description'),
-                    'meta_keywords'        => request('description'),
-                    'canonical'            => request('name'),
-                    'description'          => request('description'),
+        $product =$this->storeProduct($request->validated());
+        $product_id = $product->id;
+        $data = $request->data;
+        foreach ($data as $language){
+                LanguageProduct::create([
+                    'language_id'          =>$language['language_id'],
+                    'product_id'           =>$product_id,
+                    'language_iso_code'    => Language::find($language['language_id'])->language_iso_code,
+                    'model'                => $language['name'],
+                    'name'                 => $language['name'],
+                    'slug'                 => Str::slug($language['name'],'_'),
+                    'meta_title'           => $language['description'],
+                    'meta_description'     => $language['description'],
+                    'meta_keywords'        => $language['description'],
+                    'canonical'            => $language['name'],
+                    'description'          => $language['description'],
                 ]);
         }
 
@@ -106,5 +108,24 @@ class ProductController extends Controller
     public function destroy(product $product)
     {
         //
+    }
+
+
+    private function storeProduct(array $request)
+    {
+
+        $request = $request['data'][0];
+        $product = Product::create([
+            "name"              =>$request['name'],
+            "description"       =>$request['description'],
+            "brand"             =>$request['brand'],
+            "english_name"      =>$request['english_name'],
+            "category"          =>'test',
+            "default_colors"    =>'test',
+            "width"             =>1,
+            "height"            =>1,
+            "depth"             =>1,
+        ]);
+        return $product;
     }
 }

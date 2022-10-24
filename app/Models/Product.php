@@ -8,8 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        "name",
+        "description",
+        "brand",
+        "english_name",
+        "category",
+        "default_colors",
+        "width",
+        "height",
+        "depth",
+    ];
 
-    protected $guarded = [];
 
 
     public function languages(){
