@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Brand;
 use App\Models\Language;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,14 +25,17 @@ class StoreproductRequest extends FormRequest
      */
     public function rules()
     {
-        $count_of_products = Language::count();
+        $CountOfProducts = Language::count();
+        $ListOfBrands = Brand::all()->pluck('name');
 
         return [
-            'data'                   =>  ['required', 'array', "min:$count_of_products", "max:$count_of_products"],
+            'brand'                 => ['required','string',"exists:brands,name"],
+            'width'                 => ['nullable','numeric'],
+            'height'                 => ['nullable','numeric'],
+            'depth'                 => ['nullable','numeric'],
+            'data'                   =>  ['required', 'array', "min:$CountOfProducts", "max:$CountOfProducts"],
             'data.*.language_id'     =>  ['required', 'numeric'],
-            'data.*.model'            =>  ['required','string'],
             'data.*.name'             =>  ['required','string'],
-            'data.*.brand'             =>  ['required','string'],
             'data.*.meta_title'       =>  ['nullable','max:100'],
             'data.*.meta_description' =>  ['nullable','max:190'],
             'data.*.meta_keywords'    =>  ['nullable','max:50'],

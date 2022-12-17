@@ -44,12 +44,13 @@ class ProductController extends Controller
     {
         $product =$this->storeProduct($request->validated());
         $product_id = $product->id;
+
         $data = $request->data;
         foreach ($data as $language){
                 LanguageProduct::create([
                     'language_id'          =>$language['language_id'],
                     'product_id'           =>$product_id,
-                    'language_iso_code'    => Language::find($language['language_id'])->language_iso_code,
+                    'iso_code'    => Language::find($language['language_id'])->iso_code,
                     'model'                => $language['name'],
                     'name'                 => $language['name'],
                     'slug'                 => Str::slug($language['name'],'_'),
@@ -73,7 +74,7 @@ class ProductController extends Controller
      */
     public function show(product $product)
     {
-        //
+        return $product;
     }
 
     /**
@@ -113,18 +114,13 @@ class ProductController extends Controller
 
     private function storeProduct(array $request)
     {
-
-        $request = $request['data'][0];
         $product = Product::create([
-            "name"              =>$request['name'],
-            "description"       =>$request['description'],
             "brand"             =>$request['brand'],
-            "english_name"      =>$request['english_name'],
             "category"          =>'test',
             "default_colors"    =>'test',
-            "width"             =>1,
-            "height"            =>1,
-            "depth"             =>1,
+            "width"             =>$request['width'],
+            "height"            =>$request['height'],
+            "depth"             =>$request['depth'],
         ]);
         return $product;
     }

@@ -9,8 +9,8 @@ class Language extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
-
+    protected $guarded = ['id'];
+    protected $fillable = ['iso_code','name'];
 
     public function products(){
         return $this->hasMany(LanguageProduct::class);

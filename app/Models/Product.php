@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         "name",
         "description",
@@ -21,9 +22,12 @@ class Product extends Model
     ];
 
 
-
     public function languages(){
-        return $this->hasMany(LanguageProduct::class);
+        return $this->hasMany(LanguageProduct::class, 'product_id');
+    }
+
+    public function brand(){
+        return $this->hasOne(Brand::class);
     }
 
 }
