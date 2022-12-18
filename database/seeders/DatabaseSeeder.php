@@ -26,9 +26,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             LanguageSeeder::class,
         ]);
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+         User::factory()->create([
+             'name' => 'mahdi rahmani',
+             'email' => 'rahmanimahdi16@gmail.com',
+             'password' => bcrypt('Ma13R18@'),
+         ]);
     }
 }
