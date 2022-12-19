@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\UserResource;
 use Illuminate\Validation\ValidationException;
+use App\Utilities\CustomResponse;
 
 class AuthController extends Controller
 {
@@ -24,11 +25,12 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
-            $userInfo = ['name' => $user->name, 'token' => $user->createToken('access')->plainTextToken];
-            return UserResource::collection($userInfo);
+            $data = ['name' => $user->name, 'token' => $user->createToken('access')->plainTextToken];
+            return CustomResponse::resource($data,[],0,'user successfully created',true);
+
         }
         else{
-            return 'user with name ' . $request->name . ' allready exists';
+            return CustomResponse::resource([],[],404,'credentials are incorrect',false);
         }
 
     }
@@ -37,14 +39,14 @@ class AuthController extends Controller
         $request->validated();
         if (Auth::attempt($request->only(['email', 'password']))){
             $user = User::where(['email' => $request->email])->get()->first();
-            return [
+            $data =  [
                 'name' => $user->name,
                 'token' => $user->createToken('access')->plainTextToken,
-//                'errot' => ValidationException::withMessages(),
             ];
+            return CustomResponse::resource($data,[],0,'user successfully logged in',true);
         }
         else{
-            throw new Exception();
+            return CustomResponse::resource([],[],404,'credentials are incorrect',false);
         }
     }
 }
