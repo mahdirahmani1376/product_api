@@ -53,7 +53,6 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $e)
     {
         if ($e instanceof ValidationException) {
-//            return response()->json($e->errors());
             return CustomResponse::resource([],$e->errors(),403,'validation failed',false);
         }
 

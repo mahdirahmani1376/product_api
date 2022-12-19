@@ -5,19 +5,19 @@ namespace App\Utilities;
 class CustomResponse{
 
 
-    public static function resource($data=[],array $error,int $ErrorCode, string $message, bool $success){
+    public static function resource(array $data,array $error,int $code, string $message, bool $success){
 
         $result = [
             'data' => $data,
             'error' => [
-                'code' => $ErrorCode,
+                'code' => $code == 200 ? 0:$code,
                 'data' => $error,
             ],
             'messages' => $message,
             'success' => $success,
         ];
 
-        return response()->json($result);
+        return response()->json($result,$code);
     }
 
 }
