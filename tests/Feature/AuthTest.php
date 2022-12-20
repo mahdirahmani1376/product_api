@@ -26,7 +26,12 @@ class AuthTest extends TestCase
         ];
 
         $response = $this->post('api/register',$data);
+        $attibutes = $response->json()['data'];
 
+        $this->assertEquals(
+            ['name'=>'test', 'email'=>'test@example.com'],
+            ['name'=>$attibutes['name'], 'email'=>$attibutes['email']],
+        );
         $response->assertStatus(200);
         $this->assertDatabaseHas('users',[
             'name'=>'test',
@@ -38,16 +43,13 @@ class AuthTest extends TestCase
     public function test_user_is_logged_in(){
         $UserData = [
             'email' => 'test@example.com',
-            'password' => Hash::make('test'),
+            'password' => 'test',
         ];
 
         $user = User::factory()->create($UserData);
 
-        $response = $this->post('api/login',[
-            'email' => 'test@example.com',
-            'password' => 'test',
-        ]);
-
+        $response = $this->post('api/login',$UserData);
+        $this->assertEquals(true,Auth::check());
         $response->assertSee('token');
         $response->assertStatus(200);
 

@@ -12,6 +12,15 @@ use App\Utilities\CustomResponse;
 
 class AuthController extends Controller
 {
+    /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['login','register']]);
+    }
 
     public function register(UserRegisterRequest $request){
         $RequestValidated = $request->validated();
@@ -24,7 +33,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $RequestValidated['name'],
             'email' => $RequestValidated['email'],
-            'password' => Hash::make($RequestValidated['password']),
+            'password' => $RequestValidated['password'],
         ]);
 
         return CustomResponse::resource($user->toArray(),[],'user successfully created',true);
@@ -33,18 +42,78 @@ class AuthController extends Controller
 
     public function login(UserLoginRequest $request){
 
-        $credentials = $request->validated();
+        $credentials = $request->only('email','password');
 
         if (!$token = Auth::attempt($credentials)) {
             return CustomResponse::resource([], [], 'invalid credentials', false,403);
         }
 
         $data = [
-            'name' => Auth::user()->name,
-            'token' => $token
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => $this->guard()->factory()->getTTL() * 60
         ];
 
-        return CustomResponse::resource($data,[],'user successfully created',true);
+        return CustomResponse::resource($data,[],'user successfully logged in',true);
 
+    }
+
+    /**
+     * Get the authenticated User
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function me()
+    {
+        return response()->json($this->guard()->user());
+    }
+
+    /**
+     * Log the user out (Invalidate the token)
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout()
+    {
+        $this->guard()->logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    /**
+     * Refresh a token.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh()
+    {
+        return $this->respondWithToken($this->guard()->refresh());
+    }
+
+    /**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => $this->guard()->factory()->getTTL() * 60
+        ]);
+    }
+
+    /**
+     * Get the guard to be used during authentication.
+     *
+     * @return \Illuminate\Contracts\Auth\Guard
+     */
+    public function guard()
+    {
+        return Auth::guard();
+    }
 }
-}
+
