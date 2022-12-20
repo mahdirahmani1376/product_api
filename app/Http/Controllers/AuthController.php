@@ -18,7 +18,7 @@ class AuthController extends Controller
 
         $UserCheck = User::where('email',$RequestValidated['email'])->first();
         if ($UserCheck){
-            return CustomResponse::resource([],[],403,'the user already exists',false);
+            return CustomResponse::resource([],[],'the user already exists',false,403);
         }
 
         $user = User::create([
@@ -27,7 +27,7 @@ class AuthController extends Controller
             'password' => Hash::make($RequestValidated['password']),
         ]);
 
-        return CustomResponse::resource($user->toArray(),[],200,'user successfully created',true);
+        return CustomResponse::resource($user->toArray(),[],'user successfully created',true);
 
     }
 
@@ -36,7 +36,7 @@ class AuthController extends Controller
         $credentials = $request->validated();
 
         if (!$token = Auth::attempt($credentials)) {
-            return CustomResponse::resource([], [], 403, 'invalid credentials', false);
+            return CustomResponse::resource([], [], 'invalid credentials', false,403);
         }
 
         $data = [
@@ -44,7 +44,7 @@ class AuthController extends Controller
             'token' => $token
         ];
 
-        return CustomResponse::resource($data,[],200,'user successfully created',true);
+        return CustomResponse::resource($data,[],'user successfully created',true);
 
 }
 }
