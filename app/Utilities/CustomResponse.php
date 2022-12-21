@@ -5,7 +5,7 @@ namespace App\Utilities;
 class CustomResponse{
 
 
-    public static function resource(array $data,array $error, string $message, bool $success,int $code=200){
+    public static function resource(array $data, string $message, bool $success=true,int $code=200,array $error=[]){
 
         $result = [
             'data' => $data,
