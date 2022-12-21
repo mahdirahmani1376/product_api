@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
-use App\Models\Product;
+use App\Models\Brand;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ProductSeeder extends Seeder
+class BrandSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,6 +15,10 @@ class ProductSeeder extends Seeder
      */
     public function run()
     {
-        Product::factory(50)->create();
+
+        Brand::factory(10)->create();
+        Brand::create([
+            'name' => 'top',
+        ]);
     }
 }

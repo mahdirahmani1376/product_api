@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('meta_description')->nullable();
             $table->string('meta_keywords')->nullable();
             $table->string('canonical')->nullable();
-            $table->string('description');
+            $table->longText('description');
 
             $table->timestamps();
         });

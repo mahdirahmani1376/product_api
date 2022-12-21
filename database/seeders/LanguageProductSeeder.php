@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\LanguageProduct;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,6 +15,6 @@ class LanguageProductSeeder extends Seeder
      */
     public function run()
     {
-        //
+        LanguageProduct::factory(50)->create();
     }
 }

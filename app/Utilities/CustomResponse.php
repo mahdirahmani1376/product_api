@@ -2,10 +2,13 @@
 
 namespace App\Utilities;
 
+use http\Env\Response;
+
 class CustomResponse{
 
 
-    public static function resource(array $data, string $message, bool $success=true,int $code=200,array $error=[]){
+    public static function resource($data, string $message, bool $success=true,int $code=200,array $error=[]) : \Illuminate\Http\JsonResponse
+{
 
         $result = [
             'data' => $data,

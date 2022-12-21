@@ -13,18 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('taggables', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-
-            $table->string('default_colors');
-
-            $table->unsignedBigInteger('category_id');
-            $table->unsignedBigInteger('brand_id');
-
-            $table->integer('width');
-            $table->integer('height');
-            $table->integer('depth');
         });
     }
 
@@ -35,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('taggables');
     }
 };
