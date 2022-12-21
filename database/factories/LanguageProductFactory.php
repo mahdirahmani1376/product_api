@@ -24,16 +24,15 @@ class LanguageProductFactory extends Factory
 //        $LanguageCount = count(Language::all());
 //
 //        for($i =0; $i <= $LanguageCount; $i++){
-//        return [
-//        "language_id"=> Language::find(rand(1, count(Category::all()))),
-//        "product_id"=> ,
-//        "name"=> fake()->text(20),
-//        "meta_title"=> fake()->text(30),
-//        "meta_description"=> fake()->sentence(),
-//        "meta_keywords"=> fake()->text(20),
-//        "canonical"=> fake()->text(10),
-//        "description"=> fake()->sentence(10),
-//        ];
+        return [
+        "language_id"=> Language::find(rand(1, count(Category::all()))),
+        "name"=> fake()->text(20),
+        "meta_title"=> fake()->text(30),
+        "meta_description"=> fake()->sentence(),
+        "meta_keywords"=> fake()->text(20),
+        "canonical"=> fake()->text(10),
+        "description"=> fake()->sentence(10),
+        ];
 //        }
     }
 }

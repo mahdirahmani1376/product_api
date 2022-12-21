@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('taggables', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->unsignedBigInteger('tag_id');
+            $table->morphs('taggable');
         });
     }
 

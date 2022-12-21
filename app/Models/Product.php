@@ -33,6 +33,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereWidth($value)
  * @mixin \Eloquent
+ * @property int $category_id
+ * @property int $brand_id
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereBrandId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereCategoryId($value)
  */
 class Product extends Model
 {
@@ -57,6 +61,10 @@ class Product extends Model
 
     public function brand(){
         return $this->hasOne(Brand::class,'id','brand_id');
+    }
+
+    public function tags(){
+        return $this->morphToMany(Tag::class,'taggable');
     }
 
 }
