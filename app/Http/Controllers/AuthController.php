@@ -36,7 +36,7 @@ class AuthController extends Controller
             'password' => $RequestValidated['password'],
         ]);
 
-        return CustomResponse::resource($user->toArray(),'user successfully created');
+        return CustomResponse::resource($user,'user successfully created');
 
     }
 
@@ -48,11 +48,8 @@ class AuthController extends Controller
             return CustomResponse::resource([], 'invalid credentials', false,403, []);
         }
 
-        $data = [
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => $this->guard()->factory()->getTTL() * 60
-        ];
+
+        $data = $this->respondWithToken($token);
 
         return CustomResponse::resource($data,'user successfully logged in');
 
@@ -65,7 +62,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json($this->guard()->user());
+        return CustomResponse::resource($this->guard()->user(),'user successfully logged in');
     }
 
     /**
@@ -76,8 +73,7 @@ class AuthController extends Controller
     public function logout()
     {
         $this->guard()->logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
+        return CustomResponse::resource([],'Successfully logged out');
     }
 
     /**
@@ -87,8 +83,10 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken($this->guard()->refresh());
+        $data =  $this->respondWithToken($this->guard()->refresh());
+        return CustomResponse::resource($data,'Successfully logged out');
     }
+
 
     /**
      * Get the token array structure.
@@ -97,14 +95,15 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken($token) : array
     {
-        return response()->json([
+        return [
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => $this->guard()->factory()->getTTL() * 60
-        ]);
+        ];
     }
+
 
     /**
      * Get the guard to be used during authentication.
