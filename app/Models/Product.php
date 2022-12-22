@@ -67,4 +67,8 @@ class Product extends Model
         return $this->morphToMany(Tag::class,'taggable');
     }
 
+    public function user(){
+        return $this->belongsTo(User::class,'user_id','id');
+    }
+
 }

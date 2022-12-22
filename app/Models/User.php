@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -93,6 +94,28 @@ class User extends Authenticatable implements JWTSubject
 
     public function SetPasswordAttribute($password){
         return $this->attributes['password'] = bcrypt($password);
+    }
+
+    public function roles(){
+        return $this->belongsToMany(Role::class,'role_user','user_id','role_id','id','id');
+    }
+
+    public function IsAdmin(){
+        if(Auth::user()->roles->contains('admin')){
+            return true;
+        }
+        else return false;
+    }
+
+    public function IsWriter(){
+        if(Auth::user()->roles->pluck('name')->contains('writer')){
+            return true;
+        }
+        else return false;
+    }
+
+    public function products(){
+        return $this->hasMany(Product::class,'user_id','id');
     }
 
 }

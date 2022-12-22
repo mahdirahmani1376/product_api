@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Language;
 use App\Models\LanguageProduct;
 use App\Models\Product;
+use App\Models\Role;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -26,6 +27,9 @@ class DatabaseSeeder extends Seeder
         Category::truncate();
         User::truncate();
         Tag::truncate();
+
+        Role::create(['name'=>'writer']);
+        Role::create(['name'=>'admin']);
 
         $this->call([
             LanguageSeeder::class,
@@ -52,17 +56,6 @@ class DatabaseSeeder extends Seeder
             })
             ;
         });
-
-//        Category::factory(10)->create()->each(function($category){
-//            Product::factory(10)->create([
-//                'category_id' => $category,
-//                'brand_id'=> Brand::find(rand(1,count(Brand::all()))),
-//            ])->each(function ($product){
-//                $TagId = rand(1,count(Tag::all()));
-//                $product->tags()->sync($TagId);
-//            })
-//            ;
-//        });
 
 
     }

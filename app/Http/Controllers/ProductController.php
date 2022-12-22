@@ -7,6 +7,7 @@ use App\Models\LanguageProduct;
 use App\Models\product;
 use App\Http\Requests\StoreproductRequest;
 use App\Http\Requests\UpdateproductRequest;
+use App\Utilities\CustomResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -14,14 +15,19 @@ use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
+
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        return 'success';
+        $products = Product::paginate(10);
+
+        return CustomResponse::resource($products,'product fetched successfully');
+
     }
 
     /**
@@ -38,10 +44,12 @@ class ProductController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \App\Http\Requests\StoreproductRequest $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreproductRequest $request)
     {
+        $this->authorize('create',Product::class);
+
         $product =$this->storeProduct($request->validated());
         $product_id = $product->id;
 
@@ -62,7 +70,7 @@ class ProductController extends Controller
                 ]);
         }
 
-        return 'product created successfully';
+        return CustomResponse::resource($product,'product created successfully');
 
     }
 
@@ -70,11 +78,11 @@ class ProductController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\product  $product
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(product $product)
     {
-        return $product;
+        return CustomResponse::resource($product,'product fetched successfully');
     }
 
     /**
@@ -84,6 +92,7 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit(product $product)
+
     {
         //
     }
@@ -93,11 +102,13 @@ class ProductController extends Controller
      *
      * @param  \App\Http\Requests\UpdateproductRequest  $request
      * @param  \App\Models\product  $product
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateproductRequest $request, product $product)
     {
-        //
+
+        $this->authorize('update',$product);
+        return CustomResponse::resource($product,'product updated successfully');
     }
 
     /**
@@ -108,7 +119,9 @@ class ProductController extends Controller
      */
     public function destroy(product $product)
     {
-        //
+        $this->authorize('delete',$product);
+
+        return 'product deleted';
     }
 
 
