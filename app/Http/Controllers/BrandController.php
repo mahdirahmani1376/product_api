@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Models\Brand;
 use App\Utilities\CustomResponse;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class BrandController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return CustomResponse::resource(Category::paginate(10),'Category fetched susccesfully');
+        return CustomResponse::resource(Brand::paginate(10),'brand fetched susccesfully');
     }
 
     /**
@@ -26,54 +26,54 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $Category = $request->validate([
+        $brand = $request->validate([
             'name'=>'required|string'
         ]);
-        Category::create($Category);
+        Brand::create($brand);
 
-        return CustomResponse::resource(Category::paginate(10),'Category created susccesfully');
+        return CustomResponse::resource(Brand::paginate(10),'brand created susccesfully');
 
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Category  $Category
+     * @param  \App\Models\Brand  $brand
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Category $Category)
+    public function show(Brand $brand)
     {
-        return CustomResponse::resource($Category,'Category fetched successfully');
+        return CustomResponse::resource($brand,'brand fetched successfully');
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $Category
+     * @param  \App\Models\Brand  $brand
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, Category $Category)
+    public function update(Request $request, Brand $brand)
     {
-        $CategoryValidated = $request->validate([
+        $BrandValidated = $request->validate([
             'name'=>'required|string'
         ]);
-        $Category->update($CategoryValidated);
+        $brand->update($BrandValidated);
 
-        return CustomResponse::resource($Category,'Category updated successfully');
+        return CustomResponse::resource($brand,'brand updated successfully');
 
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Category  $Category
+     * @param  \App\Models\Brand  $brand
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Category $Category)
+    public function destroy(Brand $brand)
     {
-        $Category->delete();
+        $brand->delete();
 
-        return CustomResponse::resource($Category,'Category deleted successfully');
+        return CustomResponse::resource($brand,'brand deleted successfully');
     }
 }
