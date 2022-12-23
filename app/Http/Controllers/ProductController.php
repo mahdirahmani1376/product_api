@@ -7,6 +7,7 @@ use App\Models\LanguageProduct;
 use App\Models\product;
 use App\Http\Requests\StoreproductRequest;
 use App\Http\Requests\UpdateproductRequest;
+use App\Utilities\CustomResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -14,20 +15,29 @@ use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
+
+    public function __construct(){
+        $this->authorizeResource(Product::class,'product');
+    }
+
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        return 'success';
+        $products = Product::paginate(10);
+
+        return CustomResponse::resource($products,'product fetched successfully');
+
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function create()
     {
@@ -38,7 +48,7 @@ class ProductController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \App\Http\Requests\StoreproductRequest $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreproductRequest $request)
     {
@@ -62,7 +72,7 @@ class ProductController extends Controller
                 ]);
         }
 
-        return 'product created successfully';
+        return CustomResponse::resource($product,'product created successfully');
 
     }
 
@@ -70,20 +80,21 @@ class ProductController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\product  $product
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(product $product)
     {
-        return $product;
+        return CustomResponse::resource($product,'product fetched successfully');
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\product  $product
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function edit(product $product)
+
     {
         //
     }
@@ -93,22 +104,27 @@ class ProductController extends Controller
      *
      * @param  \App\Http\Requests\UpdateproductRequest  $request
      * @param  \App\Models\product  $product
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateproductRequest $request, product $product)
     {
-        //
+
+        $validated = $request->validated();
+        $product->update($validated);
+
+        return CustomResponse::resource($product,'product updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\product  $product
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(product $product)
     {
-        //
+        $product->delete();
+        return CustomResponse::resource($product,'product deleted successfully');
     }
 
 

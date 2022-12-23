@@ -18,7 +18,7 @@ class ProductPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return true;
     }
 
     /**
@@ -30,7 +30,7 @@ class ProductPolicy
      */
     public function view(User $user, product $product)
     {
-        //
+        return true;
     }
 
     /**
@@ -41,7 +41,12 @@ class ProductPolicy
      */
     public function create(User $user)
     {
-        //
+        if($user->IsAdmin() or $user->IsWriter()){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     /**
@@ -53,7 +58,12 @@ class ProductPolicy
      */
     public function update(User $user, product $product)
     {
-        //
+        if($user->IsAdmin() or $user->id === $product->user->id){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     /**
@@ -65,7 +75,7 @@ class ProductPolicy
      */
     public function delete(User $user, product $product)
     {
-        //
+        return $user->IsAdmin() or $user->id === $product->user->id;
     }
 
     /**
@@ -77,7 +87,7 @@ class ProductPolicy
      */
     public function restore(User $user, product $product)
     {
-        //
+        return $user->IsAdmin() or $user->id === $product->user->id;
     }
 
     /**
@@ -89,6 +99,6 @@ class ProductPolicy
      */
     public function forceDelete(User $user, product $product)
     {
-        //
+        return $user->IsAdmin();
     }
 }
