@@ -23,12 +23,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Brand whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Brand whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $logo
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereLogo($value)
  */
 class Brand extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name',];
+    protected $guarded = [];
 
     public function products()
     {

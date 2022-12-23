@@ -26,10 +26,19 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        $brand = $request->validate([
-            'name'=>'required|string'
+
+        $validated = $request->validate([
+            'name'=>'required|string',
+            'logo'=> 'nullable|file',
         ]);
-        Brand::create($brand);
+
+        if($file = $request->file('logo')){
+            $name = $file->getClientOriginalName();
+            $file->move('images',$name);
+            $validated['logo'] = $name;
+        }
+
+        Brand::create($validated);
 
         return CustomResponse::resource(Brand::paginate(10),'brand created susccesfully');
 
@@ -55,10 +64,18 @@ class BrandController extends Controller
      */
     public function update(Request $request, Brand $brand)
     {
-        $BrandValidated = $request->validate([
-            'name'=>'required|string'
+        $validated = $request->validate([
+            'name'=>'required|string',
+            'logo'=>'nullable|file'
         ]);
-        $brand->update($BrandValidated);
+
+        if($file = $request->file('logo')){
+            $name = $file->getClientOriginalName();
+            $file->move('images',$name);
+            $validated['logo'] = $name;
+        }
+
+        $brand->update($validated);
 
         return CustomResponse::resource($brand,'brand updated successfully');
 

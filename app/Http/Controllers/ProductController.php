@@ -52,7 +52,15 @@ class ProductController extends Controller
      */
     public function store(StoreproductRequest $request)
     {
-        $product =$this->storeProduct($request->validated());
+        $validated = $request->validated();
+
+        if($file = $request->file('image_url')){
+            $ImageName = $file->getClientOriginalName();
+            $file->move('images',$ImageName);
+            $validated['image_url'] = $ImageName;
+        }
+
+        $product =$this->storeProduct($validated);
         $product_id = $product->id;
 
         $data = $request->data;
@@ -108,8 +116,14 @@ class ProductController extends Controller
      */
     public function update(UpdateproductRequest $request, product $product)
     {
-
         $validated = $request->validated();
+
+        if($file = $request->file('image_url')){
+            $ImageName = $file->getClientOriginalName();
+            $file->move('images',$ImageName);
+            $validated['image_url'] = $ImageName;
+        }
+
         $product->update($validated);
 
         return CustomResponse::resource($product,'product updated successfully');
@@ -137,6 +151,7 @@ class ProductController extends Controller
             "width"             =>$request['width'],
             "height"            =>$request['height'],
             "depth"             =>$request['depth'],
+            "image_url"         =>$request['image_url'],
         ]);
         return $product;
     }

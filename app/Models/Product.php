@@ -37,6 +37,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $brand_id
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereBrandId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereCategoryId($value)
+ * @property int $user_id
+ * @property string $image_url
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[] $tags
+ * @property-read int|null $tags_count
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereImageUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereUserId($value)
  */
 class Product extends Model
 {

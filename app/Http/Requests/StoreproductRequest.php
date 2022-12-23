@@ -33,6 +33,7 @@ class StoreproductRequest extends FormRequest
             'width'                 => ['nullable','numeric'],
             'height'                 => ['nullable','numeric'],
             'depth'                 => ['nullable','numeric'],
+            'image_url'                 => ['nullable','file'],
             'data'                   =>  ['required', 'array', "min:$CountOfProducts", "max:$CountOfProducts"],
             'data.*.language_id'     =>  ['required', 'numeric'],
             'data.*.name'             =>  ['required','string'],
