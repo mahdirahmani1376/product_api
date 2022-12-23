@@ -16,6 +16,10 @@ use Illuminate\Support\Str;
 class ProductController extends Controller
 {
 
+    public function __construct(){
+        $this->authorizeResource(Product::class,'product');
+    }
+
 
     /**
      * Display a listing of the resource.
@@ -33,7 +37,7 @@ class ProductController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function create()
     {
@@ -48,8 +52,6 @@ class ProductController extends Controller
      */
     public function store(StoreproductRequest $request)
     {
-        $this->authorize('create',Product::class);
-
         $product =$this->storeProduct($request->validated());
         $product_id = $product->id;
 
@@ -89,7 +91,7 @@ class ProductController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\product  $product
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function edit(product $product)
 
@@ -107,7 +109,9 @@ class ProductController extends Controller
     public function update(UpdateproductRequest $request, product $product)
     {
 
-        $this->authorize('update',$product);
+        $validated = $request->validated();
+        $product->update($validated);
+
         return CustomResponse::resource($product,'product updated successfully');
     }
 
@@ -115,13 +119,12 @@ class ProductController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\product  $product
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(product $product)
     {
-        $this->authorize('delete',$product);
-
-        return 'product deleted';
+        $product->delete();
+        return CustomResponse::resource($product,'product deleted successfully');
     }
 
 
