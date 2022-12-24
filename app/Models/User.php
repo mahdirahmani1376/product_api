@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Spatie\Permission\Traits\HasRoles;
 
 
 /**
@@ -41,10 +42,14 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read int|null $products_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
  * @property-read int|null $roles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property-read int|null $permissions_count
+ * @method static \Illuminate\Database\Eloquent\Builder|User permission($permissions)
+ * @method static \Illuminate\Database\Eloquent\Builder|User role($roles, $guard = null)
  */
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
     /**
      * The attributes that are mass assignable.
      *
@@ -97,10 +102,6 @@ class User extends Authenticatable implements JWTSubject
 
     public function SetPasswordAttribute($password){
         return $this->attributes['password'] = bcrypt($password);
-    }
-
-    public function roles(){
-        return $this->belongsToMany(Role::class,'role_user','user_id','role_id','id','id');
     }
 
     public function IsAdmin(){

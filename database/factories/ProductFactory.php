@@ -25,7 +25,7 @@ class ProductFactory extends Factory
             'width'=> rand(1, 10),
             'height'=> rand(1, 10),
             'depth'=> rand(1, 10),
-            'image'=> fake()->imageUrl(),
+            'image_url'=> fake()->imageUrl(),
         ];
     }
 }

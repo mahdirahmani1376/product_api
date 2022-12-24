@@ -16,11 +16,6 @@ use Illuminate\Support\Str;
 class ProductController extends Controller
 {
 
-    public function __construct(){
-        $this->authorizeResource(Product::class,'product');
-    }
-
-
     /**
      * Display a listing of the resource.
      *
@@ -116,6 +111,7 @@ class ProductController extends Controller
      */
     public function update(UpdateproductRequest $request, product $product)
     {
+
         $validated = $request->validated();
 
         if($file = $request->file('image_url')){

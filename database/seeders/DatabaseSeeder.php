@@ -8,10 +8,11 @@ use App\Models\Category;
 use App\Models\Language;
 use App\Models\LanguageProduct;
 use App\Models\Product;
-use App\Models\Role;
+use Spatie\Permission\Models\Role;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,9 +29,6 @@ class DatabaseSeeder extends Seeder
         User::truncate();
         Tag::truncate();
 
-        Role::create(['name'=>'writer']);
-        Role::create(['name'=>'admin']);
-
         $this->call([
             LanguageSeeder::class,
             UserSeeder::class,
@@ -38,11 +36,20 @@ class DatabaseSeeder extends Seeder
             TagSeeder::class,
         ]);
 
+        $writer = Role::create(['name'=>'writer']);
+        $admin = Role::create(['name'=>'admin']);
+        $SuperAdmin = Role::create(['name'=>'Super Admin']);
+        $EditProducts = Permission::create(['name'=>'edit products']);
+        $EditProducts->syncPermissions([$writer,$admin]);
+        $mahdi = User::where('name','mahdi rahmani')->first();
+        $mahdi->assignRole('admin');
+
         $Languages = Language::all();
         Category::factory(10)->create()->each(function($category) use ($Languages){
             Product::factory(10)->create([
                 'category_id' => $category,
                 'brand_id'=> Brand::find(rand(1,count(Brand::all()))),
+                'user_id' => Brand::find(rand(1,count(User::all()))),
             ])->each(function ($product) use ($Languages){
                 $TagId = rand(1,count(Tag::all()));
                 $product->tags()->sync($TagId);
