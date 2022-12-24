@@ -37,5 +37,9 @@ class Brand extends Model
         return $this->hasMany(Product::class);
     }
 
+    public function GetLogoAttribute($logo){
+        return $this->attributes['logo'] = asset('images/'.$logo);
+    }
+
 
 }

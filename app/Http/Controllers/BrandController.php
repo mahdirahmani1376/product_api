@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\BrandResource;
 use App\Models\Brand;
 use App\Utilities\CustomResponse;
 use Illuminate\Http\Request;
@@ -38,9 +39,10 @@ class BrandController extends Controller
             $validated['logo'] = $name;
         }
 
-        Brand::create($validated);
+        $brand = Brand::create($validated);
 
-        return CustomResponse::resource(Brand::paginate(10),'brand created susccesfully');
+        $data = new BrandResource($brand);
+        return CustomResponse::resource($data,'brand created susccesfully');
 
     }
 
