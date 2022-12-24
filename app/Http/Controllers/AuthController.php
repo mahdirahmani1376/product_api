@@ -43,7 +43,6 @@ class AuthController extends Controller
     public function login(UserLoginRequest $request){
 
         $credentials = $request->only('email','password');
-
         if (!$token = Auth::attempt($credentials)) {
             return CustomResponse::resource([], 'invalid credentials', false,403, []);
         }
@@ -100,7 +99,7 @@ class AuthController extends Controller
         return [
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => $this->guard()->factory()->getTTL() * 60 * 60
+            'expires_in' => $this->guard()->factory()->getTTL() * 60 * 60 * 60
         ];
     }
 
