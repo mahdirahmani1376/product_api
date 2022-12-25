@@ -30,6 +30,7 @@ class UpdateproductRequest extends FormRequest
         $ListOfBrands = Brand::all()->pluck('name');
         return [
             'brand'                 => ['required','string',"exists:brands,name"],
+            'category'                 => ['required','string',"exists:categories,name"],
             'width'                 => ['nullable','numeric'],
             'height'                 => ['nullable','numeric'],
             'depth'                 => ['nullable','numeric'],

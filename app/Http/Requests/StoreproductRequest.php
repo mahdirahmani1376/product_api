@@ -30,6 +30,7 @@ class StoreproductRequest extends FormRequest
 
         return [
             'brand'                 => ['required','string',"exists:brands,name"],
+            'category'                 => ['required','string',"exists:categories,name"],
             'width'                 => ['nullable','numeric'],
             'height'                 => ['nullable','numeric'],
             'depth'                 => ['nullable','numeric'],

@@ -42,9 +42,12 @@ class DatabaseSeeder extends Seeder
         $EditProducts = Permission::create(['name'=>'edit products']);
         $EditProducts->syncPermissions([$writer,$admin]);
         $mahdi = User::where('name','mahdi rahmani')->first();
-        $mahdi->assignRole('admin');
+        $mahdi->assignRole(['admin','Super Admin','writer']);
 
         $Languages = Language::all();
+
+        Category::factory()->create(['name'=>'test']);
+
         Category::factory(10)->create()->each(function($category) use ($Languages){
             Product::factory(10)->create([
                 'category_id' => $category,

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Language;
 use App\Models\LanguageProduct;
 use App\Models\product;
@@ -9,6 +11,7 @@ use App\Http\Requests\StoreproductRequest;
 use App\Http\Requests\UpdateproductRequest;
 use App\Utilities\CustomResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
@@ -47,11 +50,12 @@ class ProductController extends Controller
      */
     public function store(StoreproductRequest $request)
     {
+
         $validated = $request->validated();
 
         if($file = $request->file('image_url')){
             $ImageName = $file->getClientOriginalName();
-            $file->move('images',$ImageName);
+            $file->storeAs('images',$ImageName,'local');
             $validated['image_url'] = $ImageName;
         }
 
@@ -140,15 +144,18 @@ class ProductController extends Controller
 
     private function storeProduct(array $request)
     {
+        $brand = Brand::where('name',$request['brand'])->first()->id;
+        $category = Category::where('name',$request['category'])->first()->id;
         $product = Product::create([
-            "brand"             =>$request['brand'],
-            "category"          =>'test',
-            "default_colors"    =>'test',
-            "width"             =>$request['width'],
-            "height"            =>$request['height'],
-            "depth"             =>$request['depth'],
-            "image_url"         =>$request['image_url'],
+            "brand_id"              =>  $brand,
+            "category_id"           =>  $category,
+            "default_colors"        =>  'test',
+            "width"                 =>  $request['width'],
+            "height"                =>  $request['height'],
+            "depth"                 =>  $request['depth'],
+            "image_url"             =>  $request['image_url'],
         ]);
         return $product;
     }
 }
+
