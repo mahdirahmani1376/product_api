@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register',[AuthController::class,'register']);
 Route::post('/login',[AuthController::class,'login']);
 
-Route::group(['middleware' => ['role:admin|writer','auth:api'],'prefix' => 'product'],function(){
+Route::group(['middleware' => ['role:admin|writer'],'prefix' => 'product'],function(){
     Route::get('/',[ProductController::class,'index']);
     Route::get('/{product}',[ProductController::class,'show']);
     Route::post('/',[ProductController::class,'store']);

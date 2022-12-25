@@ -28,6 +28,7 @@ class UpdateproductRequest extends FormRequest
 
         $CountOfProducts = Language::count();
         $ListOfBrands = Brand::all()->pluck('name');
+
         return [
             'brand'                 => ['required','string',"exists:brands,name"],
             'category'                 => ['required','string',"exists:categories,name"],

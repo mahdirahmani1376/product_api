@@ -6,10 +6,12 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Language;
 use App\Models\LanguageProduct;
-use App\Models\product;
+use App\Models\Product;
 use App\Http\Requests\StoreproductRequest;
 use App\Http\Requests\UpdateproductRequest;
 use App\Utilities\CustomResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -50,32 +52,34 @@ class ProductController extends Controller
      */
     public function store(StoreproductRequest $request)
     {
-
         $validated = $request->validated();
 
         if($file = $request->file('image_url')){
-            $ImageName = $file->getClientOriginalName();
-            $file->storeAs('images',$ImageName,'local');
+            $ImageName = time().$file->getClientOriginalName();
+            Storage::disk('local')->putFileAs('images',$file,$ImageName);
             $validated['image_url'] = $ImageName;
         }
 
+
+
         $product =$this->storeProduct($validated);
+
         $product_id = $product->id;
 
         $data = $request->data;
         foreach ($data as $language){
                 LanguageProduct::create([
-                    'language_id'          =>$language['language_id'],
-                    'product_id'           =>$product_id,
-                    'iso_code'    => Language::find($language['language_id'])->iso_code,
-                    'model'                => $language['name'],
-                    'name'                 => $language['name'],
-                    'slug'                 => Str::slug($language['name'],'_'),
-                    'meta_title'           => $language['description'],
-                    'meta_description'     => $language['description'],
-                    'meta_keywords'        => $language['description'],
-                    'canonical'            => $language['name'],
-                    'description'          => $language['description'],
+                    'language_id'           =>$language['language_id'],
+                    'product_id'            =>$product_id,
+                    'iso_code'              => Language::find($language['language_id'])->iso_code,
+                    'model'                 => $language['name'],
+                    'name'                  => $language['name'],
+                    'slug'                  => Str::slug($language['name'],'_'),
+                    'meta_title'            => $language['description'],
+                    'meta_description'      => $language['description'],
+                    'meta_keywords'         => $language['description'],
+                    'canonical'             => $language['name'],
+                    'description'           => $language['description'],
                 ]);
         }
 
@@ -86,11 +90,12 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\product  $product
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(product $product)
+    public function show(Product $product)
     {
+
         return CustomResponse::resource($product,'product fetched successfully');
     }
 
@@ -113,14 +118,13 @@ class ProductController extends Controller
      * @param  \App\Models\product  $product
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateproductRequest $request, product $product)
+    public function update(UpdateproductRequest $request, Product $product)
     {
-
         $validated = $request->validated();
-
         if($file = $request->file('image_url')){
-            $ImageName = $file->getClientOriginalName();
-            $file->move('images',$ImageName);
+            $ImageName = time().$file->getClientOriginalName();
+            Storage::delete($product->image_url);
+            Storage::disk('local')->putFileAs('public/images',$file,$ImageName);
             $validated['image_url'] = $ImageName;
         }
 
@@ -135,7 +139,7 @@ class ProductController extends Controller
      * @param  \App\Models\product  $product
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(product $product)
+    public function destroy(Product $product)
     {
         $product->delete();
         return CustomResponse::resource($product,'product deleted successfully');

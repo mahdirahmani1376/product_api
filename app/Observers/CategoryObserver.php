@@ -26,10 +26,7 @@ class CategoryObserver
      */
     public function updated(Category $category)
     {
-        $products = Product::where('category_id',$category->id)->get();
-        foreach($products as $product){
-            $product->update(['category_id' => $category->id]);
-        }
+
     }
 
     /**
@@ -40,10 +37,9 @@ class CategoryObserver
      */
     public function deleted(Category $category)
     {
-        $products = Product::where('category_id',$category->id)->get();
-        foreach($products as $product){
+        $category->products->map(function ($product){
             $product->delete();
-        }
+        });
 
     }
 
