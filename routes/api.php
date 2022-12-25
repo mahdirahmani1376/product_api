@@ -24,7 +24,7 @@ Route::group(['middleware' => ['role:admin|writer'],'prefix' => 'product'],funct
     Route::get('/',[ProductController::class,'index']);
     Route::get('/{product}',[ProductController::class,'show']);
     Route::post('/',[ProductController::class,'store']);
-    Route::patch('/{product}',[ProductController::class,'update'])->middleware('can:update,product');
+    Route::put('/{product}',[ProductController::class,'update'])->middleware('can:update,product');
     Route::delete('/{product}',[ProductController::class,'destroy'])->middleware('can:delete,product');
 });
 

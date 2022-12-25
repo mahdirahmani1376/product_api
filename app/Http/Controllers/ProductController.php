@@ -123,10 +123,13 @@ class ProductController extends Controller
         $validated = $request->validated();
         if($file = $request->file('image_url')){
             $ImageName = time().$file->getClientOriginalName();
-            Storage::delete($product->image_url);
-            Storage::disk('local')->putFileAs('public/images',$file,$ImageName);
+            Storage::delete('local/images'.$product->image_url);
+            Storage::disk('local')->putFileAs('local/images',$file,$ImageName);
             $validated['image_url'] = $ImageName;
         }
+
+        $brand = Brand::where('name',$request['brand'])->first()->id;
+        $category = Category::where('name',$request['category'])->first()->id;
 
         $product->update($validated);
 
