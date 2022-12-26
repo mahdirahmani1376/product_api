@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserRegisterRequest;
 use App\Http\Requests\UserLoginRequest;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -35,6 +36,8 @@ class AuthController extends Controller
             'email' => $RequestValidated['email'],
             'password' => $RequestValidated['password'],
         ]);
+
+        event(new Registered($user));
 
         return CustomResponse::resource($user,'user successfully created');
 
