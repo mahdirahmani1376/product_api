@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Language;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use PHPUnit\Framework\Constraint\Count;
 
 /**
@@ -20,19 +21,16 @@ class LanguageProductFactory extends Factory
      */
     public function definition()
     {
-//        $ProductId = Product::find(rand(1, count(Category::all())));
-//        $LanguageCount = count(Language::all());
-//
-//        for($i =0; $i <= $LanguageCount; $i++){
+        $name = fake()->text(20);
         return [
         "language_id"=> Language::find(rand(1, count(Category::all()))),
-        "name"=> fake()->text(20),
+        "name"=> $name,
+        "slug"=> Str::slug($name),
         "meta_title"=> fake()->text(30),
         "meta_description"=> fake()->sentence(),
         "meta_keywords"=> fake()->text(20),
         "canonical"=> fake()->text(10),
         "description"=> fake()->sentence(10),
         ];
-//        }
     }
 }

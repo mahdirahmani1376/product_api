@@ -69,10 +69,10 @@ class Product extends Model
         return $this->belongsTo(User::class,'user_id','id');
     }
 
-    public function imageUrl(): Attribute{
-        return Attribute::make(
-        get: fn ($value) => storage_path($value)
-        );
-    }
+//    public function imageUrl(): Attribute{
+//        return Attribute::make(
+//        get: fn ($value) => url('images/'.$value)
+//        );
+//    }
 
 }

@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Language;
 use App\Models\LanguageProduct;
 use App\Models\Product;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use App\Models\Tag;
 use App\Models\User;
@@ -58,7 +59,7 @@ class DatabaseSeeder extends Seeder
                 $product->tags()->sync($TagId);
 
                 foreach($Languages as $Language){
-                    LanguageProduct::factory()->create([
+                    $languageProduct = LanguageProduct::factory()->create([
                         'product_id'=> $product->id,
                         'language_id'=> $Language->id,
                     ]);
