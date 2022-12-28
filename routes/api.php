@@ -4,6 +4,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\VerifyController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +21,11 @@ use Illuminate\Support\Facades\Route;
 */
 Route::post('/register',[AuthController::class,'register']);
 Route::post('/login',[AuthController::class,'login']);
+
+Route::get('/email/verify',[VerifyController::class,'notice'])->middleware('auth')->name('verification.notice');
+Route::get('/email/verify/{id}/{hash}',[VerifyController::class,'verify'])->middleware(['auth'])->name('verification.verify');
+Route::post('/email/verification-notification',[VerifyController::class,'resend'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
 
 Route::group(['middleware' => ['role:admin|writer'],'prefix' => 'product'],function(){
     Route::get('/',[ProductController::class,'index']);
