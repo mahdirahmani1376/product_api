@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
@@ -19,20 +20,28 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::post('/register',[AuthController::class,'register']);
 Route::post('/login',[AuthController::class,'login']);
 
+##################################################email_verification###################################################
 Route::get('/email/verify',[VerifyController::class,'notice'])->middleware('auth')->name('verification.notice');
 Route::get('/email/verify/{id}/{hash}',[VerifyController::class,'verify'])->middleware(['auth'])->name('verification.verify');
 Route::post('/email/verification-notification',[VerifyController::class,'resend'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
+##################################################password_reset###################################################
+Route::get('/forgot-password',[PasswordResetController::class,'passwordResetRequest'])->name('password.request');
+Route::post('/forgot-password',[PasswordResetController::class,'sendPasswordResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [PasswordResetController::class,'passwordResetForm'])->name('password.reset');
+Route::post('/reset-password',[PasswordResetController::class,'resetPassword'] )->name('password.update');
 
+##################################################email_verification###################################################
 Route::group(['middleware' => ['role:admin|writer'],'prefix' => 'product'],function(){
-    Route::get('/',[ProductController::class,'index']);
-    Route::get('/{product}',[ProductController::class,'show']);
-    Route::post('/',[ProductController::class,'store']);
-    Route::patch('/{product}',[ProductController::class,'update'])->middleware('can:update,product');
-    Route::delete('/{product}',[ProductController::class,'destroy'])->middleware('can:delete,product');
+Route::get('/',[ProductController::class,'index']);
+Route::get('/{product}',[ProductController::class,'show']);
+Route::post('/',[ProductController::class,'store']);
+Route::patch('/{product}',[ProductController::class,'update'])->middleware('can:update,product');
+Route::delete('/{product}',[ProductController::class,'destroy'])->middleware('can:delete,product');
 });
 
 Route::group(['middleware' => ['role:admin']],function(){
