@@ -22,9 +22,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/register',[AuthController::class,'register']);
-Route::post('/login',[AuthController::class,'login']);
-
+Route::group(['middlewear'=>'guest'], function(){
+    Route::post('/register',[AuthController::class,'register']);
+    Route::post('/login',[AuthController::class,'login']);
+});
 ##################################################email_verification###################################################
 Route::group(['middlewear'=>'auth'],function(){
     Route::get('/email/verify',[VerifyController::class,'notice']);
@@ -36,33 +37,31 @@ Route::get('/forgot-password',[PasswordResetController::class,'passwordResetRequ
 Route::post('/forgot-password',[PasswordResetController::class,'sendPasswordResetLink']);
 Route::get('/reset-password/{token}', [PasswordResetController::class,'passwordResetForm']);
 Route::post('/reset-password',[PasswordResetController::class,'resetPassword']);
-##################################################email_verification###################################################
-Route::group(['middleware' => ['role:Super Admin|admin|writer'],'prefix' => 'product'],function(){
-Route::get('/',[ProductController::class,'index']);
-Route::get('/{product}',[ProductController::class,'show']);
-Route::post('/',[ProductController::class,'store']);
-Route::patch('/{product}',[ProductController::class,'update'])->middleware('can:update,product');
-Route::delete('/{product}',[ProductController::class,'destroy'])->middleware('can:delete,product');
+##################################################product_crud#######################################################
+Route::group(['prefix' => 'product'],function(){
+Route::get('/',[ProductController::class,'index'])->middleware(['can:update,product','can:products_view']);
+Route::get('/{product}',[ProductController::class,'show'])->middleware(['can:update,product','can:products_view']);
+Route::post('/',[ProductController::class,'store'])->middleware(['can:update,product','can:products_store']);
+Route::patch('/{product}',[ProductController::class,'update'])->middleware(['can:update,product','can:products_update']);
+Route::delete('/{product}',[ProductController::class,'destroy'])->middleware(['can:delete,product','can:products_destroy']);
 });
-
-Route::group(['middleware' => ['role:Super Admin|admin']],function(){
-    Route::group(['prefix' => 'category'],function(){
-        Route::get('/',[CategoryController::class,'index']);
-        Route::get('/{category}',[CategoryController::class,'show']);
-        Route::post('/',[CategoryController::class,'store']);
-        Route::patch('/{category}',[CategoryController::class,'update']);
-        Route::delete('/{category}',[CategoryController::class,'destroy']);
-    });
-
-    Route::group(['prefix' => 'brand'],function(){
-        Route::get('/',[brandController::class,'index']);
-        Route::get('/{brand}',[brandController::class,'show']);
-        Route::post('/',[brandController::class,'store']);
-        Route::patch('/{brand}',[brandController::class,'update']);
-        Route::delete('/{brand}',[brandController::class,'destroy']);
-    });
+##################################################category_crud#######################################################
+Route::group(['prefix' => 'category'],function(){
+    Route::get('/',[CategoryController::class,'index'])->middleware(['can:category_view']);
+    Route::get('/{category}',[CategoryController::class,'show'])->middleware(['can:category_view']);
+    Route::post('/',[CategoryController::class,'store'])->middleware(['can:category_store']);
+    Route::patch('/{category}',[CategoryController::class,'update'])->middleware(['can:category_update']);
+    Route::delete('/{category}',[CategoryController::class,'destroy'])->middleware(['can:category_destroy']);
 });
-
+##################################################brand_crud#######################################################
+Route::group(['prefix' => 'brand'],function(){
+    Route::get('/',[brandController::class,'index'])->middleware(['can:brand_view']);
+    Route::get('/{brand}',[brandController::class,'show'])->middleware(['can:brand_view']);
+    Route::post('/',[brandController::class,'store'])->middleware(['can:brand_view']);
+    Route::patch('/{brand}',[brandController::class,'update'])->middleware(['can:brand_view']);
+    Route::delete('/{brand}',[brandController::class,'destroy'])->middleware(['can:brand_view']);
+});
+##################################################role_crud#######################################################
 Route::group(['prefix' => 'role'],function(){
     Route::get('/',[RoleController::class,'index'])->middleware(['can:permissions_view']);
     Route::get('/{role}',[RoleController::class,'show'])->middleware(['can:permissions_view']);
