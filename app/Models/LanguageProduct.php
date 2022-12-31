@@ -33,6 +33,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|LanguageProduct whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LanguageProduct whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string|null $slug
+ * @method static \Illuminate\Database\Eloquent\Builder|LanguageProduct whereSlug($value)
  */
 class LanguageProduct extends Model
 {

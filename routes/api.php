@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\VerifyController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -36,7 +37,7 @@ Route::get('/reset-password/{token}', [PasswordResetController::class,'passwordR
 Route::post('/reset-password',[PasswordResetController::class,'resetPassword'] )->name('password.update');
 
 ##################################################email_verification###################################################
-Route::group(['middleware' => ['role:admin|writer'],'prefix' => 'product'],function(){
+Route::group(['middleware' => ['role:Super Admin|admin|writer'],'prefix' => 'product'],function(){
 Route::get('/',[ProductController::class,'index']);
 Route::get('/{product}',[ProductController::class,'show']);
 Route::post('/',[ProductController::class,'store']);
@@ -44,7 +45,7 @@ Route::patch('/{product}',[ProductController::class,'update'])->middleware('can:
 Route::delete('/{product}',[ProductController::class,'destroy'])->middleware('can:delete,product');
 });
 
-Route::group(['middleware' => ['role:admin']],function(){
+Route::group(['middleware' => ['role:Super Admin|admin']],function(){
     Route::group(['prefix' => 'category'],function(){
         Route::get('/',[CategoryController::class,'index']);
         Route::get('/{category}',[CategoryController::class,'show']);
@@ -62,7 +63,15 @@ Route::group(['middleware' => ['role:admin']],function(){
     });
 });
 
-
+Route::group(['prefix' => 'role'],function(){
+    Route::get('/',[RoleController::class,'index'])->middleware(['can:permissions_view']);
+    Route::get('/{role}',[RoleController::class,'show'])->middleware(['can:permissions_view']);
+    Route::post('/',[RoleController::class,'store'])->middleware(['can:permissions_store']);
+    Route::patch('/{role}',[RoleController::class,'update'])->middleware(['can:permissions_update']);
+    Route::delete('/{role}',[RoleController::class,'destroy'])->middleware(['can:permissions_destroy']);
+    Route::post('/role_permission_attach',[RoleController::class,'attach'])->middleware(['can:permissions_attach_detach']);
+    Route::post('/role_permission_detach',[RoleController::class,'detach'])->middleware(['can:permissions_attach_detach']);
+});
 
 
 
