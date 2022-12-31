@@ -26,16 +26,16 @@ Route::post('/register',[AuthController::class,'register']);
 Route::post('/login',[AuthController::class,'login']);
 
 ##################################################email_verification###################################################
-Route::get('/email/verify',[VerifyController::class,'notice'])->middleware('auth')->name('verification.notice');
-Route::get('/email/verify/{id}/{hash}',[VerifyController::class,'verify'])->middleware(['auth'])->name('verification.verify');
-Route::post('/email/verification-notification',[VerifyController::class,'resend'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
-
+Route::group(['middlewear'=>'auth'],function(){
+    Route::get('/email/verify',[VerifyController::class,'notice']);
+    Route::get('/email/verify/{id}/{hash}',[VerifyController::class,'verify']);
+    Route::post('/email/verification-notification',[VerifyController::class,'resend'])->middleware(['throttle:6,1']);
+});
 ##################################################password_reset###################################################
-Route::get('/forgot-password',[PasswordResetController::class,'passwordResetRequest'])->name('password.request');
-Route::post('/forgot-password',[PasswordResetController::class,'sendPasswordResetLink'])->name('password.email');
-Route::get('/reset-password/{token}', [PasswordResetController::class,'passwordResetForm'])->name('password.reset');
-Route::post('/reset-password',[PasswordResetController::class,'resetPassword'] )->name('password.update');
-
+Route::get('/forgot-password',[PasswordResetController::class,'passwordResetRequest']);
+Route::post('/forgot-password',[PasswordResetController::class,'sendPasswordResetLink']);
+Route::get('/reset-password/{token}', [PasswordResetController::class,'passwordResetForm']);
+Route::post('/reset-password',[PasswordResetController::class,'resetPassword']);
 ##################################################email_verification###################################################
 Route::group(['middleware' => ['role:Super Admin|admin|writer'],'prefix' => 'product'],function(){
 Route::get('/',[ProductController::class,'index']);
