@@ -2,11 +2,11 @@
 
 use App\Http\Controllers\Auth\{
 AuthenticatedSessionController,
-ConfirmablePasswordController,
+ConfirmablePasswordResetController,
 EmailVerificationNotificationController,
 EmailVerificationPromptController,
-NewPasswordController,
-PasswordController,
+NewPasswordResetController,
+PasswordResetController,
 PasswordResetLinkController,
 RegisteredUserController,
 VerifyEmailController,
@@ -31,10 +31,10 @@ Route::middleware('guest')->group(function () {
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
                 ->name('password.email');
 
-    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
+    Route::get('reset-password/{token}', [NewPasswordResetController::class, 'create'])
                 ->name('password.reset');
 
-    Route::post('reset-password', [NewPasswordController::class, 'store'])
+    Route::post('reset-password', [NewPasswordResetController::class, 'store'])
                 ->name('password.store');
 });
 
@@ -50,12 +50,12 @@ Route::middleware('auth')->group(function () {
                 ->middleware('throttle:6,1')
                 ->name('verification.send');
 
-    Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
+    Route::get('confirm-password', [ConfirmablePasswordResetController::class, 'show'])
                 ->name('password.confirm');
 
-    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
+    Route::post('confirm-password', [ConfirmablePasswordResetController::class, 'store']);
 
-    Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+    Route::put('password', [PasswordResetController::class, 'update'])->name('password.update');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');

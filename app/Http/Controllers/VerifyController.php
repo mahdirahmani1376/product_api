@@ -25,4 +25,6 @@ class VerifyController extends Controller
         $request->user()->sendEmailVerificationNotification();
         return CustomResponse::resource(auth()->user(), 'Verification link sent!');
     }
+
+
 }
