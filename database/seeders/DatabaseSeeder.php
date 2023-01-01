@@ -40,8 +40,6 @@ class DatabaseSeeder extends Seeder
         $writer = Role::create(['name'=>'writer']);
         $admin = Role::create(['name'=>'admin']);
         $SuperAdmin = Role::create(['name'=>'Super Admin']);
-        $EditProducts = Permission::create(['name'=>'edit products']);
-        $EditProducts->syncPermissions([$writer,$admin]);
         $mahdi = User::where('name','mahdi rahmani')->first();
         $mahdi->assignRole(['admin','Super Admin','writer']);
 

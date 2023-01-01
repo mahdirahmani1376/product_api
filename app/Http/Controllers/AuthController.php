@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRegisterRequest;
 use App\Http\Requests\UserLoginRequest;
+use App\Jobs\ProcessEmails;
+use App\Jobs\UserRegisterJob;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -37,7 +39,7 @@ class AuthController extends Controller
             'password' => $RequestValidated['password'],
         ]);
 
-        event(new Registered($user));
+        UserRegisterJob::dispatch($user);
 
         return CustomResponse::resource($user,'user successfully created');
 
