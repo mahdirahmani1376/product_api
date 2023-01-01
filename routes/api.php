@@ -28,8 +28,7 @@ Route::group(['middlewear'=>'guest'], function(){
 });
 ##################################################email_verification###################################################
 Route::group(['middlewear'=>'auth'],function(){
-    Route::get('/email/verify',[VerifyController::class,'notice']);
-    Route::get('/email/verify/{id}/{hash}',[VerifyController::class,'verify']);
+    Route::get('/email/verify/{id}/{token}',[VerifyController::class,'verify'])->middleware(['auth']);
     Route::post('/email/verification-notification',[VerifyController::class,'resend'])->middleware(['throttle:6,1']);
 });
 ##################################################password_reset###################################################
