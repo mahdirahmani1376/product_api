@@ -57,7 +57,7 @@ class UserVerificationEmail extends Mailable
             markdown: 'emails.email_verification',
             with: [
                 'id' => $user['id'],
-                'hash' => $email_verified_token_expire_time,
+                'token' => $token,
             ]
         );
     }
