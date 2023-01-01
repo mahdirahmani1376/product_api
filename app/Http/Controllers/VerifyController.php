@@ -9,15 +9,15 @@ use Illuminate\Http\Request;
 
 class VerifyController extends Controller
 {
-    public function notice(Request $request, User $user)
+    public function notice(User $user)
     {
-        return CustomResponse::resource($user, 'your email has been verified', false, 403);
+        return CustomResponse::resource($user, 'your email needs to be verified', false, 403);
     }
 
     public function verify(EmailVerificationRequest $request)
     {
         $request->fulfill();
-        return CustomResponse::resource(auth()->user(), 'your email needs to be verified');
+        return CustomResponse::resource(auth()->user(), 'your email has been verified');
     }
 
     public function resend(Request $request)
