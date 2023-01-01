@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserRegistrationEvent;
+use App\Mail\UserVerificationEmail;
 use App\Utilities\CustomResponse;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
-use function GuzzleHttp\Promise\all;
+use Illuminate\Support\Facades\Mail;
 
 class VerifyController extends Controller
 {
@@ -35,6 +37,10 @@ class VerifyController extends Controller
 
     public function resend(Request $request)
     {
+        $user = auth()->user();
+        if($user->email_verified_at == null){
+            Mail::to($user->email)->send(new UserVerificationEmail($user));
+        }
     }
 
 
