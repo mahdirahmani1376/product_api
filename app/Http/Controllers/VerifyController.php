@@ -11,19 +11,17 @@ class VerifyController extends Controller
 {
     public function notice(User $user)
     {
-        return CustomResponse::resource($user, 'your email needs to be verified', false, 403);
     }
 
-    public function verify(EmailVerificationRequest $request)
+    public function verify(Request $request)
     {
-        $request->fulfill();
-        return CustomResponse::resource(auth()->user(), 'your email has been verified');
+        $validated = $request->validate([
+            ''
+        ]);
     }
 
     public function resend(Request $request)
     {
-        $request->user()->sendEmailVerificationNotification();
-        return CustomResponse::resource(auth()->user(), 'Verification link sent!');
     }
 
 

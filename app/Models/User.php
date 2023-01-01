@@ -47,7 +47,7 @@ use Illuminate\Contracts\Auth\CanResetPassword;
  * @method static \Illuminate\Database\Eloquent\Builder|User permission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder|User role($roles, $guard = null)
  */
-class User extends Authenticatable implements JWTSubject,MustVerifyEmail,CanResetPassword
+class User extends Authenticatable implements JWTSubject,CanResetPassword
 {
     use HasFactory, Notifiable, HasRoles;
     /**
@@ -59,6 +59,8 @@ class User extends Authenticatable implements JWTSubject,MustVerifyEmail,CanRese
         'name',
         'email',
         'password',
+        'email_verified_token',
+        'email_verified_token_expire_time',
     ];
 
     /**
