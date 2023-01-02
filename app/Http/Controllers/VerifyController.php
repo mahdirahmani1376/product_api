@@ -21,8 +21,7 @@ class VerifyController extends Controller
         $token = $request->token;
         $id = $request->id;
         $user = auth()->user();
-        dd(
-           $user->email_verified_token_expire_time < now());
+
         if(
             $id == $user->id && $token == $user->email_verified_token
             && is_null($user->email_verified_at) && $user->email_verified_token_expire_time < now()
