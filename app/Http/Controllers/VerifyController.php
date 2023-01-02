@@ -21,10 +21,11 @@ class VerifyController extends Controller
         $token = $request->token;
         $id = $request->id;
         $user = auth()->user();
-
+        dd(
+           $user->email_verified_token_expire_time < now());
         if(
             $id == $user->id && $token == $user->email_verified_token
-            && $user->email_verified_at == null && $user->email_verified_token_expire_time < now()
+            && is_null($user->email_verified_at) && $user->email_verified_token_expire_time < now()
         )
         {
             $user->email_verified_at = now();
@@ -32,15 +33,18 @@ class VerifyController extends Controller
 
             return CustomResponse::resource($user,'email has been verified');
         }
+
         return CustomResponse::resource($user,'email has not been verified');
     }
 
     public function resend(Request $request)
     {
         $user = auth()->user();
-        if($user->email_verified_at == null){
+
+        if(is_null($user->email_verified_at)){
             Mail::to($user->email)->send(new UserVerificationEmail($user));
         }
+
     }
 
 

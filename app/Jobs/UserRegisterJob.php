@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\UserRegistrationEvent;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -32,6 +33,6 @@ class UserRegisterJob implements ShouldQueue
      */
     public function handle()
     {
-        event(new Registered($this->user));
+        event(new UserRegistrationEvent($this->user));
     }
 }

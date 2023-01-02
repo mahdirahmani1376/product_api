@@ -56,7 +56,7 @@ class UserVerificationEmail extends Mailable
         return new Content(
             markdown: 'emails.email_verification',
             with: [
-                'id' => $user['id'],
+                'id'    => $user['id'],
                 'token' => $token,
             ]
         );

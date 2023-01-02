@@ -29,20 +29,18 @@ class AuthController extends Controller
     public function register(UserRegisterRequest $request){
         $RequestValidated = $request->validated();
 
-//        $UserCheck = User::where('email',$RequestValidated['email'])->first();
-//        if ($UserCheck){
-//            return CustomResponse::resource([],'the user already exists',false,403,[]);
-//        }
+        $UserCheck = User::where('email',$RequestValidated['email'])->first();
+        if ($UserCheck){
+            return CustomResponse::resource([],'the user already exists',false,403,[]);
+        }
 
-//        $user = User::create([
-//            'name' => $RequestValidated['name'],
-//            'email' => $RequestValidated['email'],
-//            'password' => $RequestValidated['password'],
-//        ]);
-        $user = User::where('name','mahdi rahmani')->first();
+        $user = User::create([
+            'name' => $RequestValidated['name'],
+            'email' => $RequestValidated['email'],
+            'password' => $RequestValidated['password'],
+        ]);
 
-//        UserRegisterJob::dispatch($user);
-        event(new UserRegistrationEvent($user));
+        UserRegisterJob::dispatch($user);
 
         return CustomResponse::resource($user,'user successfully created');
 
