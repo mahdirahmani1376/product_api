@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserLoginEvent;
 use App\Events\UserRegistrationEvent;
 use App\Http\Requests\UserRegisterRequest;
 use App\Http\Requests\UserLoginRequest;
+use App\Jobs\NewLoginFromAnotherIpJob;
 use App\Jobs\ProcessEmails;
 use App\Jobs\UserRegisterJob;
 use App\Models\User;
@@ -53,8 +55,9 @@ class AuthController extends Controller
             return CustomResponse::resource([], 'invalid credentials', false,403, []);
         }
 
-
         $data = $this->respondWithToken($token);
+
+        NewLoginFromAnotherIpJob::dispatch(auth()->user(),$request->ip());
 
         return CustomResponse::resource($data,'user successfully logged in');
 
