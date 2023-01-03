@@ -2,13 +2,13 @@
 
 namespace App\Listeners;
 
-use App\Events\UserRegistrationEvent;
-use App\Mail\UserVerificationEmail;
+use App\Events\UserLoginEvent;
+use App\Mail\UserNewLoginFromAnotherIpMail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
-class UserRegistrationListener
+class UserLoginListener
 {
     /**
      * Create the event listener.
@@ -26,8 +26,8 @@ class UserRegistrationListener
      * @param  object  $event
      * @return void
      */
-    public function handle(UserRegistrationEvent $event)
+    public function handle(UserLoginEvent $event)
     {
-        Mail::to($event->user->email)->send(new UserVerificationEmail($event->user));
+        Mail::to($event->user->email)->send(new UserNewLoginFromAnotherIpMail($event->user,$event->ip));
     }
 }

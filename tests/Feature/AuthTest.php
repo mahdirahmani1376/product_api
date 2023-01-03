@@ -68,4 +68,10 @@ class AuthTest extends TestCase
         $response->assertStatus(200);
 
     }
+
+    public function test_user_is_verified(){
+
+
+    }
+
 }
