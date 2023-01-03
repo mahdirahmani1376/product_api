@@ -2,12 +2,17 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\UserRegisterJob;
+use App\Mail\UserVerificationEmail;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
@@ -48,12 +53,12 @@ class AuthTest extends TestCase
 
     public function test_user_is_logged_in(){
         $UserData = [
-            'email' => 'test@example.com',
+            'name'=>'test',
+            'email'=>'test@example.com',
             'password' => 'test',
         ];
 
-        $user = User::factory()->create($UserData);
-
+        $this->post('api/register',$UserData);
         $response = $this->post('api/login',$UserData);
         $this->assertEquals(true,Auth::check());
 
@@ -69,9 +74,42 @@ class AuthTest extends TestCase
 
     }
 
-    public function test_user_is_verified(){
+    public function test_email_verification_is_sent_after_register(){
+        Bus::fake();
 
+        $UserData = [
+            'email'     => 'test@example.com',
+            'name'      => 'test',
+            'password'  => 'test',
+        ];
 
+        $response = $this->post('api/register',$UserData);
+        Bus::assertDispatched(UserRegisterJob::class);
     }
+
+    public function test_user_register_job(){
+        Mail::fake();
+        $user = User::factory()->create();
+        $token = Str::random(120);
+        $job = new UserRegisterJob($user,$token);
+        $job->handle();
+        Mail::assertSent(UserVerificationEmail::class);
+    }
+
+    public function test_user_is_verified_after_email_verification(){
+        $UserData = [
+            'email'     => 'test@example.com',
+            'name'      => 'test',
+            'password'  => 'test',
+        ];
+
+        $this->post('api/register',$UserData);
+
+        $user = User::where('email',$UserData['email'])->first();
+        $this->actingAs($user)->get("api/email/verify/$user->email_verified_token");
+
+        $this->assertNotNull($user->email_verified_at);
+    }
+
 
 }

@@ -27,6 +27,7 @@ class VerifyController extends Controller
             return CustomResponse::resource($user,'email has not been verified');
         }
 
+        $user->email_verified_at = now();
         return CustomResponse::resource($user,'email has been verified');
     }
 

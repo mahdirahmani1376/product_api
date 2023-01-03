@@ -16,14 +16,16 @@ class UserRegisterJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $user;
+    public $token;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($user,$token)
     {
         $this->user = $user;
+        $this->token = $token;
     }
 
     /**
@@ -33,6 +35,6 @@ class UserRegisterJob implements ShouldQueue
      */
     public function handle()
     {
-        event(new UserRegistrationEvent($this->user));
+        event(new UserRegistrationEvent($this->user,$this->token));
     }
 }
