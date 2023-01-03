@@ -54,9 +54,8 @@ class UserVerificationEmail extends Mailable
         ]);
 
         return new Content(
-            markdown: 'emails.email_verification',
+            view: 'emails.email_verification',
             with: [
-                'id'    => $user['id'],
                 'token' => $token,
             ]
         );
