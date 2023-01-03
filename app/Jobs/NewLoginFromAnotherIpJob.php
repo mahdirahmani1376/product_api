@@ -2,8 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Events\UserRegistrationEvent;
-use Illuminate\Auth\Events\Registered;
+use App\Events\UserLoginEvent;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,19 +10,21 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class UserRegisterJob implements ShouldQueue
+class NewLoginFromAnotherIpJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $user;
+    public $ip;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($user,$ip)
     {
         $this->user = $user;
+        $this->ip = $ip;
     }
 
     /**
@@ -33,6 +34,6 @@ class UserRegisterJob implements ShouldQueue
      */
     public function handle()
     {
-        event(new UserRegistrationEvent($this->user));
+        event(new UserLoginEvent($this->user,$this->ip));
     }
 }

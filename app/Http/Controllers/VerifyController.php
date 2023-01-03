@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserRegistrationEvent;
+use App\Mail\UserVerificationEmail;
 use App\Utilities\CustomResponse;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
-use function GuzzleHttp\Promise\all;
+use Illuminate\Support\Facades\Mail;
 
 class VerifyController extends Controller
 {
@@ -14,27 +16,28 @@ class VerifyController extends Controller
     {
     }
 
-    public function verify(Request $request)
+    public function verify(Request $request,$token)
     {
-        $token = $request->token;
-        $id = $request->id;
         $user = auth()->user();
-
-        if(
-            $id == $user->id && $token == $user->email_verified_token
-            && $user->email_verified_at == null && $user->email_verified_token_expire_time < now()
-        )
-        {
-            $user->email_verified_at = now();
-            $user->save();
-
-            return CustomResponse::resource($user,'email has been verified');
+        if (
+            ! User::where('email_verified_token',$token)->first()
+            && is_null($user->email_verified_at)
+            && ! User::where('email_verified_token_expire_time','<',now())->first()
+        ){
+            return CustomResponse::resource($user,'email has not been verified');
         }
-        return CustomResponse::resource($user,'email has not been verified');
+
+        return CustomResponse::resource($user,'email has been verified');
     }
 
     public function resend(Request $request)
     {
+        $user = auth()->user();
+
+        if(is_null($user->email_verified_at)){
+            Mail::to($user->email)->send(new UserVerificationEmail($user));
+        }
+
     }
 
 

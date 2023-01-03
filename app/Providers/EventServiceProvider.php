@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\UserLoginEvent;
 use App\Events\UserRegistrationEvent;
+use App\Listeners\UserLoginListener;
 use App\Listeners\UserRegistrationListener;
 use App\Models\Category;
 use App\Observers\CategoryObserver;
@@ -25,6 +27,10 @@ class EventServiceProvider extends ServiceProvider
 //        ],
         UserRegistrationEvent::class => [
             UserRegistrationListener::class
+        ],
+
+        UserLoginEvent::class => [
+            UserLoginListener::class
         ],
 
     ];

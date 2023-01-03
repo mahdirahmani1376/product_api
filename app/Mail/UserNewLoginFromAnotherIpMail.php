@@ -8,22 +8,22 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
-class UserVerificationEmail extends Mailable
+class UserNewLoginFromAnotherIpMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $user;
+    public $ip;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($user,$ip)
     {
         $this->user = $user;
+        $this->ip = $ip;
     }
 
     /**
@@ -34,7 +34,7 @@ class UserVerificationEmail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'User Verification Email',
+            subject: 'User New Login From Another Ip Mail',
         );
     }
 
@@ -45,18 +45,11 @@ class UserVerificationEmail extends Mailable
      */
     public function content()
     {
-        $token = Str::random(120);
-        $user = $this->user;
-        $email_verified_token_expire_time = now()->addMinutes(15);
-        $user->update([
-            'email_verified_token'              => $token,
-            'email_verified_token_expire_time'  => $email_verified_token_expire_time,
-        ]);
-
         return new Content(
-            view: 'emails.email_verification',
+            view: 'emails.UserLoginFromAnotherIp',
             with: [
-                'token' => $token,
+                'user'  =>  $this->user,
+                'ip'    =>  $this->ip,
             ]
         );
     }
