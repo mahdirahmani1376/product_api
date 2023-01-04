@@ -32,7 +32,7 @@ class AuthTest extends TestCase
             'password' => 'test',
         ];
 
-        $response = $this->post('api/register',$data);
+        $response = $this->postJson('api/register',$data);
 
         $response
             ->assertJson(fn (AssertableJson $json) =>
