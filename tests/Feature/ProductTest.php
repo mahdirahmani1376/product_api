@@ -97,7 +97,6 @@ class ProductTest extends TestCase
         $response = $this->actingAs($user)->postJson('/api/product',$payload);
         $response->assertStatus(200);
 
-        dd($response);
         Storage::assertExists($fileName);
 
     }
