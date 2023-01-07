@@ -15,15 +15,15 @@ class UserVerificationEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user;
+    public $token;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($token)
     {
-        $this->user = $user;
+        $this->token = $token;
     }
 
     /**
@@ -45,18 +45,11 @@ class UserVerificationEmail extends Mailable
      */
     public function content()
     {
-        $token = Str::random(120);
-        $user = $this->user;
-        $email_verified_token_expire_time = now()->addMinutes(15);
-        $user->update([
-            'email_verified_token'              => $token,
-            'email_verified_token_expire_time'  => $email_verified_token_expire_time,
-        ]);
 
         return new Content(
             view: 'emails.email_verification',
             with: [
-                'token' => $token,
+                'token' => $this->token,
             ]
         );
     }

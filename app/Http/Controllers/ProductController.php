@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProductResource;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Language;
@@ -83,7 +84,7 @@ class ProductController extends Controller
                 ]);
         }
 
-        return CustomResponse::resource($product,'product created successfully');
+        return CustomResponse::resource(new ProductResource($product),'product created successfully');
 
     }
 

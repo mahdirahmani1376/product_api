@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Utilities\CustomResponse;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -42,7 +43,14 @@ class AuthController extends Controller
             'password' => $RequestValidated['password'],
         ]);
 
-        UserRegisterJob::dispatch($user);
+        $token = Str::random(120);
+        $email_verified_token_expire_time = now()->addMinutes(15);
+        $user->update([
+            'email_verified_token'              => $token,
+            'email_verified_token_expire_time'  => $email_verified_token_expire_time,
+        ]);
+
+        UserRegisterJob::dispatch($user,$token);
 
         return CustomResponse::resource($user,'user successfully created');
 
