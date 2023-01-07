@@ -18,14 +18,14 @@ class ProductResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "brand_id" => Brand::find($this->brand_id)->name,
-            "category_id" => Category::find($this->category_id)->name,
+            "brand_name" => Brand::find($this->brand_id)->name,
+            "category_name" => Category::find($this->category_id)->name,
             "default_colors" => $this->default_colors,
             "width" => $this->width,
             "height" => $this->height,
             "depth" => $this->depth,
             "image_url" => $this->image_url,
-            "user_id" => User::find($this->user_id)->name,
+            "user_name" => User::find($this->user_id)->name,
             "updated_at" => $this->updated_at,
             "created_at" => $this->created_at,
         ];

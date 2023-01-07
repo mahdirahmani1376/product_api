@@ -21,6 +21,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('brand_id');
+            $table->unsignedBigInteger('user_id');
 
             $table->integer('width');
             $table->integer('height');

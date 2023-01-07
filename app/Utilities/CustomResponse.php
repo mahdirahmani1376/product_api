@@ -2,8 +2,6 @@
 
 namespace App\Utilities;
 
-use http\Env\Response;
-
 class CustomResponse{
 
 
