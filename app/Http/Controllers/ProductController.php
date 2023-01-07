@@ -2,25 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ProductResource;
-use App\Models\Brand;
-use App\Models\Category;
-use App\Models\Language;
-use App\Models\LanguageProduct;
 use App\Models\Product;
 use App\Http\Requests\StoreproductRequest;
 use App\Http\Requests\UpdateproductRequest;
+use App\Repositories\ProductInterface;
+use App\Repositories\ProductRepository;
 use App\Utilities\CustomResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
+
+    public ProductRepository $productRepository;
+
+    /**
+     * @param ProductRepository $productRepository
+     */
+    public function __construct(ProductInterface $productRepository)
+    {
+
+        $this->productRepository = $productRepository;
+    }
 
     /**
      * Display a listing of the resource.
@@ -29,20 +30,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::paginate(10);
-
-        return CustomResponse::resource($products,'product fetched successfully');
-
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function create()
-    {
-        //
+        return CustomResponse::resource($this->productRepository->index(),'product fetched successfully');
     }
 
     /**
@@ -53,39 +41,7 @@ class ProductController extends Controller
      */
     public function store(StoreproductRequest $request)
     {
-        $validated = $request->validated();
-
-        if($file = $request->file('image_url')){
-            $ImageName = time().$file->getClientOriginalName();
-            Storage::disk('local')->putFileAs('images',$file,$ImageName);
-            $validated['image_url'] = $ImageName;
-        }
-
-
-
-        $product =$this->storeProduct($validated);
-
-        $product_id = $product->id;
-
-        $data = $request->data;
-        foreach ($data as $language){
-                LanguageProduct::create([
-                    'language_id'           =>$language['language_id'],
-                    'product_id'            =>$product_id,
-                    'iso_code'              => Language::find($language['language_id'])->iso_code,
-                    'model'                 => $language['name'],
-                    'name'                  => $language['name'],
-                    'slug'                  => Str::slug($language['name'],'_'),
-                    'meta_title'            => $language['description'],
-                    'meta_description'      => $language['description'],
-                    'meta_keywords'         => $language['description'],
-                    'canonical'             => $language['name'],
-                    'description'           => $language['description'],
-                ]);
-        }
-
-        return CustomResponse::resource(new ProductResource($product),'product created successfully');
-
+        return CustomResponse::resource($this->productRepository->store($request),'product created successfully');
     }
 
     /**
@@ -96,20 +52,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-
-        return CustomResponse::resource($product,'product fetched successfully');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\product  $product
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function edit(product $product)
-
-    {
-        //
+        return CustomResponse::resource($this->productRepository->show($product),'product fetched successfully');
     }
 
     /**
@@ -121,58 +64,8 @@ class ProductController extends Controller
      */
     public function update(UpdateproductRequest $request, Product $product)
     {
-        $validated = $request->validated();
-        if($file = $request->file('image_url')){
-            $ImageName = time().$file->getClientOriginalName();
-            Storage::disk('local')->delete('images/'.$product->image_url);
-            Storage::disk('local')->putFileAs('images/',$file,$ImageName);
-            $validated['image_url'] = $ImageName;
-        }
 
-        $brand = Brand::where('name',$validated['brand'])->first()->id;
-        $category = Category::where('name',$validated['category'])->first()->id;
-
-        $productData = $request->except(['brand','category']);
-        $productData['brand_id'] = $brand;
-        $productData['category'] = $category;
-
-        $productData = [
-            "width"         => $validated['width'],
-            "height"        => $validated['height'],
-            "depth"         =>  $validated['depth'],
-            "brand_id"      => $brand,
-            "category_id"   => $category,
-            "image_url"     => $validated['image_url'],
-            "user_id"       =>  Auth()->id(),
-        ];
-
-        $product->update($productData);
-
-        $product_id = $product->id;
-
-        $data = $request->data;
-        foreach ($data as $language){
-            $languageToUpdate = LanguageProduct::where([
-                'product_id' => $product_id,
-                'language_id' => $language['language_id'],
-            ]);
-            $languageUpdate = [
-//                'language_id'           =>$language['language_id'],
-//                'product_id'            =>$product_id,
-//                'iso_code'              => Language::find($language['language_id'])->iso_code,
-                'name'                  => $language['name'],
-                'slug'                  => Str::slug($language['name'],'_'),
-                'meta_title'            => $language['description'],
-                'meta_description'      => $language['description'],
-                'meta_keywords'         => $language['description'],
-                'canonical'             => $language['name'],
-                'description'           => $language['description'],
-            ];
-            $languageToUpdate->update($languageUpdate);
-
-        }
-
-        return CustomResponse::resource($product,'product updated successfully');
+        return CustomResponse::resource($this->productRepository->update($request,$product),'product updated successfully');
     }
 
     /**
@@ -183,26 +76,8 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $product->delete();
-        return CustomResponse::resource($product,'product deleted successfully');
+        return CustomResponse::resource($this->productRepository->destroy($product),'product deleted successfully');
     }
 
-
-    private function storeProduct(array $request)
-    {
-        $brand = Brand::where('name',$request['brand'])->first()->id;
-        $category = Category::where('name',$request['category'])->first()->id;
-        $product = Product::create([
-            "brand_id"              =>  $brand,
-            "category_id"           =>  $category,
-            "default_colors"        =>  'test',
-            "width"                 =>  $request['width'],
-            "height"                =>  $request['height'],
-            "depth"                 =>  $request['depth'],
-            "image_url"             =>  $request['image_url'],
-            "user_id"               =>  Auth()->id(),
-        ]);
-        return $product;
-    }
 }
 

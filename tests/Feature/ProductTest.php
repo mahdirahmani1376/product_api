@@ -95,9 +95,10 @@ class ProductTest extends TestCase
         ];
 
         $response = $this->actingAs($user)->postJson('/api/product',$payload);
+
         $response->assertStatus(200);
 
-        Storage::assertExists($fileName);
+        Storage::assertExists("images/".$response->json()['data']["image_url"]);
 
     }
 
