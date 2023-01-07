@@ -8,6 +8,14 @@ use Illuminate\Support\ServiceProvider;
 
 class ProductRepositoryProvider extends ServiceProvider
 {
+
+    /**
+     * @var array
+     */
+    public $bindings = [
+        ProductInterface::class => ProductRepository::class
+    ];
+
     /**
      * Register services.
      *
@@ -25,6 +33,6 @@ class ProductRepositoryProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->bind(ProductInterface::class,ProductRepository::class);
+
     }
 }
