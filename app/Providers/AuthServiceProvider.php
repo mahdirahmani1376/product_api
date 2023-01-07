@@ -37,6 +37,7 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasRole('Super Admin') ? true : null;
         });
 
+
 //        VerifyEmail::toMailUsing(function ($notifiable, $url) {
 //            return (new MailMessage)
 //                ->subject('Verify Email Address')
