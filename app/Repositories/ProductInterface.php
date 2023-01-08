@@ -5,16 +5,12 @@ namespace App\Repositories;
 interface ProductInterface
 {
 
-    public function index ();
+    public function paginate ();
 
-    public function store ($request);
+    public function create ($validated, $brand, $category);
 
-    public function show ($product);
+    public function update ($product, $productData);
 
-    public function update ($request, $product);
-
-    public function destroy ($product);
-
-    public function storeProduct (array $request);
+    public function delete ($id);
 
 }

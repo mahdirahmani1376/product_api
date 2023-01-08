@@ -21,6 +21,7 @@ class ProductTest extends TestCase
         $this->seed();
         $this->user = $this->createUser();
         $this->admin = $this->createUser(true);
+
     }
     /**
      * A basic feature test example.
@@ -93,7 +94,6 @@ class ProductTest extends TestCase
             ],
             "image_url" => UploadedFile::fake()->image($fileName),
         ];
-
         $response = $this->actingAs($user)->postJson('/api/product',$payload);
 
         $response->assertStatus(200);
