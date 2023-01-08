@@ -99,8 +99,8 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateproductRequest  $request
-     * @param  \App\Models\product  $product
+     * @param \App\Http\Requests\UpdateproductRequest $request
+     * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateproductRequest $request, $id)
